@@ -47,6 +47,15 @@ public class SinglePlayerHandler {
         entityTypeMap.put(entityType, entityTypeMap.getOrDefault(entityType, 0) + value);
     }
 
+    public void removeEntityType(EntityType entityType, int value) {
+        int currentCount = entityTypeMap.getOrDefault(entityType, 0);
+        if (currentCount > value) {
+            entityTypeMap.put(entityType, currentCount - value);
+        } else {
+            entityTypeMap.remove(entityType);
+        }
+    }
+
     public void resetCounts() {
         entityTypeMap.clear();
     }

@@ -42,6 +42,18 @@ public class MultiplayerHandler {
         entityCounts.put(entityType, entityCounts.getOrDefault(entityType, 0) + 1);
     }
 
+    public void removeEntity(ServerWorld world, EntityType entityType) {
+        Map<EntityType, Integer> entityCounts = worldEntityCounts.get(world);
+        if (entityCounts != null) {
+            int currentCount = entityCounts.getOrDefault(entityType, 0);
+            if (currentCount > 1) {
+                entityCounts.put(entityType, currentCount - 1);
+            } else {
+                entityCounts.remove(entityType);
+            }
+        }
+    }
+
     public void resetCounts() {
         worldEntityCounts.clear();
     }
@@ -77,14 +89,14 @@ public class MultiplayerHandler {
             // Calculate and display mobcaps only if there is data
             if (!mobcapCounts.isEmpty()) {
                 int loadedChunks = world.getChunkManager().getLoadedChunkCount();
-                LOGGER.debug("=== MOBCAPS FOR " + world.getRegistryKey().getValue() + " ===");
-                LOGGER.debug("Loaded chunks: " + loadedChunks);
+                LOGGER.info("=== MOBCAPS FOR " + world.getRegistryKey().getValue() + " ===");
+                LOGGER.info("Loaded chunks: " + loadedChunks);
 
                 mobcapCounts.forEach((spawnGroup, count) -> {
                     int limit = calculateMobcapLimit(spawnGroup, loadedChunks);
                     float percentage = limit > 0 ? (float) count / limit * 100 : 0;
 
-                    LOGGER.debug(String.format(
+                    LOGGER.info(String.format(
                             "MOBCAP - %s: %d/%d (%.1f%%)",
                             formatSpawnGroupName(spawnGroup),
                             count,
@@ -92,7 +104,7 @@ public class MultiplayerHandler {
                             percentage
                     ));
                 });
-                LOGGER.debug("========================");
+                LOGGER.info("========================");
             }
         });
     }
