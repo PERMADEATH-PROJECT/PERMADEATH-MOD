@@ -89,14 +89,14 @@ public class MultiplayerHandler {
             // Calculate and display mobcaps only if there is data
             if (!mobcapCounts.isEmpty()) {
                 int loadedChunks = world.getChunkManager().getLoadedChunkCount();
-                LOGGER.info("=== MOBCAPS FOR " + world.getRegistryKey().getValue() + " ===");
-                LOGGER.info("Loaded chunks: " + loadedChunks);
+                LOGGER.debug("=== MOBCAPS FOR " + world.getRegistryKey().getValue() + " ===");
+                LOGGER.debug("Loaded chunks: " + loadedChunks);
 
                 mobcapCounts.forEach((spawnGroup, count) -> {
                     int limit = calculateMobcapLimit(spawnGroup, loadedChunks);
                     float percentage = limit > 0 ? (float) count / limit * 100 : 0;
 
-                    LOGGER.info(String.format(
+                    LOGGER.debug(String.format(
                             "MOBCAP - %s: %d/%d (%.1f%%)",
                             formatSpawnGroupName(spawnGroup),
                             count,
@@ -104,7 +104,7 @@ public class MultiplayerHandler {
                             percentage
                     ));
                 });
-                LOGGER.info("========================");
+                LOGGER.debug("========================");
             }
         });
     }

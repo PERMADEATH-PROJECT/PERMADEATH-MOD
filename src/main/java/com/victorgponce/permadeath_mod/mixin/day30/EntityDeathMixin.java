@@ -19,9 +19,6 @@ public class EntityDeathMixin {
     private void onRemove(Entity.RemovalReason reason, CallbackInfo ci) {
         Entity entity = (Entity) (Object) this;
 
-        // Only process if the entity was removed due to death
-        if (reason != Entity.RemovalReason.KILLED) return;
-
         int day = ConfigFileManager.readConfig().getDay();
         if (day < 30) return;
 

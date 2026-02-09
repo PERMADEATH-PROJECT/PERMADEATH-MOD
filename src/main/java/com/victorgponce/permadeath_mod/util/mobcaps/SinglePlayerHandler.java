@@ -79,12 +79,12 @@ public class SinglePlayerHandler {
 
         // Display summary by category only if there is data
         if (!mobcapCounts.isEmpty()) {
-            LOGGER.info("=== MOBCAP SUMMARY ===");
+            LOGGER.debug("=== MOBCAP SUMMARY ===");
             mobcapCounts.forEach((spawnGroup, count) -> {
                 int limit = getMobcapLimit(spawnGroup);
                 float percentage = (float) count / limit * 100;
 
-                LOGGER.info(String.format(
+                LOGGER.debug(String.format(
                         "MOBCAP - %s: %d/%d (%.1f%%)",
                         formatSpawnGroupName(spawnGroup),
                         count,
@@ -92,7 +92,7 @@ public class SinglePlayerHandler {
                         percentage
                 ));
             });
-            LOGGER.info("========================");
+            LOGGER.debug("========================");
         }
     }
 
