@@ -2,7 +2,7 @@ package com.victorgponce.permadeath_mod.util;
 
 import com.victorgponce.permadeath_mod.config.Config;
 import com.victorgponce.permadeath_mod.data.WorldHolder;
-import com.victorgponce.permadeath_mod.mixin.common.ServerWorldAccessor;
+import com.victorgponce.permadeath_mod.mixin.accessor.ServerWorldAccessor;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;

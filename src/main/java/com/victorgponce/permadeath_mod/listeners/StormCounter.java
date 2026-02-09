@@ -1,6 +1,6 @@
 package com.victorgponce.permadeath_mod.listeners;
 
-import com.victorgponce.permadeath_mod.mixin.common.ServerWorldAccessor;
+import com.victorgponce.permadeath_mod.mixin.accessor.ServerWorldAccessor;
 import com.victorgponce.permadeath_mod.util.ConfigFileManager;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;

@@ -2,6 +2,12 @@ package com.victorgponce.permadeath_mod;
 
 import com.victorgponce.permadeath_mod.commands.PermadeathCommand;
 import com.victorgponce.permadeath_mod.config.Config;
+import com.victorgponce.permadeath_mod.core.modules.ModuleManager;
+import com.victorgponce.permadeath_mod.core.modules.day10.Day10Module;
+import com.victorgponce.permadeath_mod.core.modules.day20.Day20Module;
+import com.victorgponce.permadeath_mod.core.modules.day25.Day25Module;
+import com.victorgponce.permadeath_mod.core.modules.day30.Day30Module;
+import com.victorgponce.permadeath_mod.core.modules.day40.Day40Module;
 import com.victorgponce.permadeath_mod.data.DataBaseHandler;
 import com.victorgponce.permadeath_mod.listeners.*;
 import com.victorgponce.permadeath_mod.loot_tables.LootTableOverwriter;
@@ -41,6 +47,14 @@ public class Permadeath_mod implements DedicatedServerModInitializer {
         // Config Folder and File creator
         ConfigFileManager.initialize();
         Config cfg = ConfigFileManager.readConfig();
+
+        // Register day-based game modules
+        ModuleManager manager = ModuleManager.getInstance();
+        manager.register(new Day10Module());
+        manager.register(new Day20Module());
+        manager.register(new Day25Module());
+        manager.register(new Day30Module());
+        manager.register(new Day40Module());
 
         LOGGER.info("JDBC URL: {}", cfg.getJdbc());
 
