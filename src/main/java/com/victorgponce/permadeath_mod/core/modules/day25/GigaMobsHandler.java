@@ -1,16 +1,9 @@
 package com.victorgponce.permadeath_mod.core.modules.day25;
 
 import com.victorgponce.permadeath_mod.util.ConfigFileManager;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.GhastEntity;
-import net.minecraft.entity.mob.MagmaCubeEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.SlimeEntity;
-import net.minecraft.world.LocalDifficulty;
-import net.minecraft.world.ServerWorldAccess;
 
 import java.util.Random;
 
@@ -22,17 +15,18 @@ public final class GigaMobsHandler {
     private GigaMobsHandler() {}
 
     /**
-     * Overrides ghast attributes with boosted health (40-60) and extended follow range.
-     * Returns null if day < 25 (caller should skip override).
+     * Applies boosted health (40-60) and follow range to a ghast on spawn.
+     * Modifies the entity directly because createGhastAttributes is a static
+     * registration method that only runs once at startup.
      */
-    public static DefaultAttributeContainer.Builder createDemonicGhastAttributes() {
+    public static void applyDemonicGhastAttributes(GhastEntity ghast) {
         int day = ConfigFileManager.readConfig().getDay();
-        if (day < 25) return null;
+        if (day < 25) return;
 
         double health = 40 + RANDOM.nextInt(21);
-        return MobEntity.createMobAttributes()
-                .add(EntityAttributes.MAX_HEALTH, health)
-                .add(EntityAttributes.FOLLOW_RANGE, 100.0);
+        ghast.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(health);
+        ghast.setHealth((float) health);
+        ghast.getAttributeInstance(EntityAttributes.FOLLOW_RANGE).setBaseValue(100.0);
     }
 
     /**

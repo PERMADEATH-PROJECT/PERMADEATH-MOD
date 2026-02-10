@@ -19,7 +19,8 @@ public class MagmaCubeEntityMixin extends SlimeEntity {
     @Inject(method = "setSize", at = @At("HEAD"))
     private void onSetSize(int size, boolean heal, CallbackInfo ci) {
         if (GigaMobsHandler.shouldEnlargeGigaMagmacube()) {
-            ((SlimeEntity)(Object)this).setSize(16, false);
+            // super calls SlimeEntity.setSize directly, avoiding recursive mixin hook on MagmaCubeEntity
+            super.setSize(16, false);
         }
     }
 }

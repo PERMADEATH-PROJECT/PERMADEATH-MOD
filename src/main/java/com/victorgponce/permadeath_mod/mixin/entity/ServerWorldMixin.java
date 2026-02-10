@@ -5,6 +5,7 @@ import com.victorgponce.permadeath_mod.core.modules.common.SpiderEffectsHandler;
 import com.victorgponce.permadeath_mod.core.modules.common.WeatherHandler;
 import com.victorgponce.permadeath_mod.core.modules.day20.CustomSkeletonsHandler;
 import com.victorgponce.permadeath_mod.core.modules.day25.DeathTrainEffectsHandler;
+import com.victorgponce.permadeath_mod.core.modules.day25.GigaMobsHandler;
 import com.victorgponce.permadeath_mod.core.modules.day25.RavagerEffectsHandler;
 import com.victorgponce.permadeath_mod.core.modules.day30.EntityTransformationHandler;
 import com.victorgponce.permadeath_mod.core.modules.day30.SkeletonDay30Handler;
@@ -29,6 +30,11 @@ public class ServerWorldMixin {
         SpiderEffectsHandler.handleSpiderSpawn(entity);
         DeathTrainEffectsHandler.applyDeathTrainEffects(entity);
         RavagerEffectsHandler.applyRavagerEffects(entity);
+
+        // Apply per-entity ghast attributes since createGhastAttributes only runs once at startup
+        if (entity instanceof net.minecraft.entity.mob.GhastEntity ghast) {
+            GigaMobsHandler.applyDemonicGhastAttributes(ghast);
+        }
 
         if (CustomSkeletonsHandler.handleEntitySpawn(entity)) { cir.setReturnValue(false); return; }
         if (SkeletonDay30Handler.handleEntitySpawn(entity)) { cir.setReturnValue(false); return; }

@@ -35,7 +35,7 @@ public final class DragonBattleHandler {
      */
     public static void enhanceDragon(EnderDragonEntity dragon) {
         int day = ConfigFileManager.readConfig().getDay();
-        if (day <= 30 || dragon == null) return;
+        if (day < 30 || dragon == null) return;
 
         dragon.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(600);
         dragon.setHealth(600);
@@ -53,7 +53,7 @@ public final class DragonBattleHandler {
      */
     public static void tickDragonReinforcements(EnderDragonEntity dragon) {
         int day = ConfigFileManager.readConfig().getDay();
-        if (day <= 30 || dragon == null) return;
+        if (day < 30 || dragon == null) return;
 
         accumulatedTicks++;
         if (accumulatedTicks >= 20 * 30) {

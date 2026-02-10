@@ -1,7 +1,9 @@
 package com.victorgponce.permadeath_mod.core.modules.day40;
 
 import com.victorgponce.permadeath_mod.util.ConfigFileManager;
-import com.victorgponce.permadeath_mod.util.EntitiesCounter;
+import com.victorgponce.permadeath_mod.util.mobcaps.SinglePlayerHandler;
+import com.victorgponce.permadeath_mod.util.tickcounter.TaskManager;
+import com.victorgponce.permadeath_mod.util.tickcounter.TickCounter;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -27,6 +29,11 @@ public final class MobModifierHandler {
     private static final ThreadLocal<Boolean> inCustomSpawn = ThreadLocal.withInitial(() -> false);
 
     private static final int MAX_CAVE_SPIDERS = 30;
+
+    // Uses real-time entity counts instead of static counters
+    private static int getCaveSpiderCount() {
+        return SinglePlayerHandler.getInstance().getEntityTypeMap().getOrDefault(EntityType.CAVE_SPIDER, 0);
+    }
 
     private static final List<StatusEffectInstance> CREEPER_EFFECTS = List.of(
             new StatusEffectInstance(StatusEffects.SPEED, Integer.MAX_VALUE, 2),
@@ -102,7 +109,8 @@ public final class MobModifierHandler {
             SkeletonEntity skeleton = createCustomSkeleton(serverWorld, skeletonType);
             skeleton.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
             serverWorld.spawnEntity(skeleton);
-            skeleton.startRiding(phantom, true);
+            // Delay mounting by 1 tick so both entities are fully registered in the world
+            TaskManager.addTask(new TickCounter(1, () -> skeleton.startRiding(phantom, true)));
         } finally {
             inCustomSpawn.set(false);
         }
@@ -124,11 +132,10 @@ public final class MobModifierHandler {
         try {
             inCustomSpawn.set(true);
 
-            if (EntitiesCounter.caveSpiderCount < MAX_CAVE_SPIDERS) {
+            if (getCaveSpiderCount() < MAX_CAVE_SPIDERS) {
                 CaveSpiderEntity caveSpider = new CaveSpiderEntity(EntityType.CAVE_SPIDER, serverWorld);
                 caveSpider.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
                 serverWorld.spawnEntity(caveSpider);
-                EntitiesCounter.caveSpiderCount++;
             }
             // Block all normal spider spawns after day 40
             return true;

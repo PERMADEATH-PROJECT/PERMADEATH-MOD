@@ -11,7 +11,7 @@ public final class PhantomHandler {
 
     public static void modifyPhantom(PhantomEntity phantom) {
         int day = ConfigFileManager.readConfig().getDay();
-        if (day < 20 || day >= 40) return;
+        if (day < 20) return;
 
         phantom.setPhantomSize(9);
         phantom.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(40.0);
