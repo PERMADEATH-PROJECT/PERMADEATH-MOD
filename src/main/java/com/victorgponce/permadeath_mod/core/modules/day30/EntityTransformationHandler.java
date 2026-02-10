@@ -2,7 +2,6 @@ package com.victorgponce.permadeath_mod.core.modules.day30;
 
 import com.victorgponce.permadeath_mod.mixin.accessor.CreeperEntityAccessor;
 import com.victorgponce.permadeath_mod.util.ConfigFileManager;
-import com.victorgponce.permadeath_mod.util.EntitiesCounter;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -55,29 +54,27 @@ public final class EntityTransformationHandler {
         try {
             inCustomSpawn.set(true);
 
-            if (entity instanceof SquidEntity && EntitiesCounter.guardianCount < 20) {
+            if (entity instanceof SquidEntity && getEntityCount(serverWorld, EntityType.GUARDIAN) < 20) {
                 GuardianEntity guardian = new GuardianEntity(EntityType.GUARDIAN, serverWorld);
                 guardian.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
                 guardian.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, 999999, 2));
                 guardian.setCustomName(Text.literal("Speed Guardian"));
                 serverWorld.spawnEntity(guardian);
-                EntitiesCounter.guardianCount++;
                 return true;
             }
 
             // Block excess squids/blazes that would go over their caps
-            if ((entity instanceof SquidEntity && EntitiesCounter.guardianCount >= 20)
-                    || (entity instanceof BlazeEntity && EntitiesCounter.blazeCount >= 15)) {
+            if ((entity instanceof SquidEntity && getEntityCount(serverWorld, EntityType.GUARDIAN) >= 20)
+                    || (entity instanceof BlazeEntity && getEntityCount(serverWorld, EntityType.BLAZE) >= 15)) {
                 return true;
             }
 
-            if (entity instanceof BatEntity && EntitiesCounter.blazeCount < 15) {
+            if (entity instanceof BatEntity && getEntityCount(serverWorld, EntityType.BLAZE) < 15) {
                 BlazeEntity blaze = new BlazeEntity(EntityType.BLAZE, serverWorld);
                 blaze.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
                 blaze.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 999999, 2));
                 blaze.setCustomName(Text.literal("Resistance Blaze"));
                 serverWorld.spawnEntity(blaze);
-                EntitiesCounter.blazeCount++;
                 return true;
             }
 
@@ -127,5 +124,15 @@ public final class EntityTransformationHandler {
         }
 
         return false;
+    }
+
+    // Counts entities of a given type directly in the server world
+    // so the cap reflects the actual state even mid-tick
+    private static int getEntityCount(ServerWorld world, EntityType<?> type) {
+        int count = 0;
+        for (Entity e : world.iterateEntities()) {
+            if (e.getType() == type) count++;
+        }
+        return count;
     }
 }

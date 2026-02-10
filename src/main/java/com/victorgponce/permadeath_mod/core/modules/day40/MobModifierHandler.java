@@ -1,7 +1,6 @@
 package com.victorgponce.permadeath_mod.core.modules.day40;
 
 import com.victorgponce.permadeath_mod.util.ConfigFileManager;
-import com.victorgponce.permadeath_mod.util.mobcaps.SinglePlayerHandler;
 import com.victorgponce.permadeath_mod.util.tickcounter.TaskManager;
 import com.victorgponce.permadeath_mod.util.tickcounter.TickCounter;
 import net.minecraft.enchantment.Enchantments;
@@ -30,9 +29,13 @@ public final class MobModifierHandler {
 
     private static final int MAX_CAVE_SPIDERS = 30;
 
-    // Uses real-time entity counts instead of static counters
-    private static int getCaveSpiderCount() {
-        return SinglePlayerHandler.getInstance().getEntityTypeMap().getOrDefault(EntityType.CAVE_SPIDER, 0);
+    // Counts entities of a given type directly in the server world
+    private static int getCaveSpiderCount(ServerWorld world) {
+        int count = 0;
+        for (Entity e : world.iterateEntities()) {
+            if (e.getType() == EntityType.CAVE_SPIDER) count++;
+        }
+        return count;
     }
 
     private static final List<StatusEffectInstance> CREEPER_EFFECTS = List.of(
@@ -132,7 +135,7 @@ public final class MobModifierHandler {
         try {
             inCustomSpawn.set(true);
 
-            if (getCaveSpiderCount() < MAX_CAVE_SPIDERS) {
+            if (getCaveSpiderCount(serverWorld) < MAX_CAVE_SPIDERS) {
                 CaveSpiderEntity caveSpider = new CaveSpiderEntity(EntityType.CAVE_SPIDER, serverWorld);
                 caveSpider.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
                 serverWorld.spawnEntity(caveSpider);
