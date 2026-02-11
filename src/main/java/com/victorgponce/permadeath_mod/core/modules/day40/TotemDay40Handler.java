@@ -18,15 +18,12 @@ public final class TotemDay40Handler {
 
     /**
      * Returns true if the totem activation should be blocked.
-     * Day 40+ has a 3% activation chance and requires holding at least 2 totems,
-     * consuming one extra totem as a cost to prevent hoarding.
+     * Day 40+ requires holding at least 2 totems (consuming one extra),
+     * and even then only has a 3% chance of actually activating.
      */
     public static boolean shouldBlockTotem(Object self) {
         int day = ConfigFileManager.readConfig().getDay();
         if (day < 40) return false;
-
-        // 97% chance to skip (only 3% triggers the totem logic)
-        if (Random.create().nextInt(100) >= 3) return false;
 
         if (!(self instanceof ServerPlayerEntity player)) return false;
 
@@ -39,7 +36,7 @@ public final class TotemDay40Handler {
             }
         }
 
-        // Must have at least 2 totems for the mechanic to activate
+        // Must have at least 2 totems
         if (totemCount < 2) {
             LOGGER.info("Player {} has only {} totems. Canceling activation.", player.getName().getString(), totemCount);
             return true;
@@ -47,6 +44,13 @@ public final class TotemDay40Handler {
 
         // Remove one additional totem (not the one currently in hand)
         removeExtraTotem(player);
+
+        // 97% chance of the totem actually working
+        if (Random.create().nextInt(100) <= 3) {
+            LOGGER.info("Player {} failed the 97% totem activation roll.", player.getName().getString());
+            return true;
+        }
+
         return false;
     }
 

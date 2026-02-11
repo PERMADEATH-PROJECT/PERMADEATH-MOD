@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.victorgponce.permadeath_mod.Permadeath_mod.LOGGER;
+
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
     @Inject(method = "dropLoot", at = @At("HEAD"), cancellable = true)
@@ -25,12 +27,15 @@ public class LivingEntityMixin {
 
     @Inject(method = "tryUseDeathProtector", at = @At("HEAD"), cancellable = true)
     private void onTotemUse(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+        LOGGER.info("Entrando en logica de totem");
         LivingEntity self = (LivingEntity) (Object) this;
         if (TotemHandler.shouldDisableTotem()) {
+            LOGGER.info("Entrando en logica de totem dia < 40");
             cir.setReturnValue(false);
             return;
         }
         if (TotemDay40Handler.shouldBlockTotem(self)) {
+            LOGGER.info("Entrando en logica de totem dia > 40");
             cir.setReturnValue(false);
         }
     }
