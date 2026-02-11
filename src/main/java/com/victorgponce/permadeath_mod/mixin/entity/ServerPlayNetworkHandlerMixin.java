@@ -2,6 +2,7 @@ package com.victorgponce.permadeath_mod.mixin.entity;
 
 import com.victorgponce.permadeath_mod.core.modules.common.NetheriteRestrictionHandler;
 import net.minecraft.network.packet.c2s.play.ClickSlotC2SPacket;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
