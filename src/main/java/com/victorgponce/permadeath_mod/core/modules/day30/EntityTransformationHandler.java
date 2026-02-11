@@ -92,6 +92,7 @@ public final class EntityTransformationHandler {
             }
 
             if (entity instanceof SkeletonEntity skeleton) {
+                if (entity.getCommandTags().contains(com.victorgponce.permadeath_mod.core.modules.day40.MobModifierHandler.PHANTOM_RIDER_TAG)) return false;
                 ItemStack tippedArrow = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.STRONG_HARMING);
                 tippedArrow.setCount(64);
                 skeleton.equipStack(EquipmentSlot.OFFHAND, tippedArrow);

@@ -92,6 +92,9 @@ public final class MobModifierHandler {
         return world.random.nextFloat() < 0.6f;
     }
 
+    // Tag applied to skeletons spawned as phantom riders so other handlers skip them
+    public static final String PHANTOM_RIDER_TAG = "permadeath_phantom_rider";
+
     /**
      * Handles phantom rider spawning. Returns true if no further action is needed from the mixin.
      * Skeleton riders mount phantoms using the same day-30 skeleton variants.
@@ -111,9 +114,15 @@ public final class MobModifierHandler {
             int skeletonType = Random.create().nextInt(5);
             SkeletonEntity skeleton = createCustomSkeleton(serverWorld, skeletonType);
             skeleton.refreshPositionAndAngles(entity.getX(), entity.getY(), entity.getZ(), entity.getYaw(), entity.getPitch());
+            // Tag the skeleton so SkeletonDay30Handler and others skip it
+            skeleton.addCommandTag(PHANTOM_RIDER_TAG);
             serverWorld.spawnEntity(skeleton);
-            // Delay mounting by 1 tick so both entities are fully registered in the world
-            TaskManager.addTask(new TickCounter(1, () -> skeleton.startRiding(phantom, true)));
+            // Delay mounting by 2 ticks so both entities are fully registered in the world
+            TaskManager.addTask(new TickCounter(2, () -> {
+                if (skeleton.isAlive() && phantom.isAlive()) {
+                    skeleton.startRiding(phantom, true);
+                }
+            }));
         } finally {
             inCustomSpawn.set(false);
         }
