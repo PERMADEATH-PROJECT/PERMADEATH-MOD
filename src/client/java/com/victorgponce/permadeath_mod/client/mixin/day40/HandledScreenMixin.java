@@ -24,12 +24,14 @@ public abstract class HandledScreenMixin {
         BinaryDataHandler config = BinaryDataHandler.getInstance();
         if (config.getDay() < 40) return;
 
+        MinecraftClient client = MinecraftClient.getInstance();
         // Only runs on the client side
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        ClientPlayerEntity player = client.player;
 
         // Check if the player is not null and if the swap hands key is pressed
-        if (player != null && MinecraftClient.getInstance().options.swapHandsKey.matchesKey(keyCode, scanCode)) {
-            cir.setReturnValue(true); // Prevent the default behavior of swapping hands
+        if (player != null && (client.options.swapHandsKey.matchesKey(keyCode, scanCode) ||
+                client.options.hotbarKeys[8].matchesKey(keyCode, scanCode))) {
+            cir.setReturnValue(true);
             cir.cancel();
         }
     }

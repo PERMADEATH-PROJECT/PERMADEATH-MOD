@@ -27,11 +27,9 @@ public abstract class ClientSlotClampMixin {
         BinaryDataHandler config = BinaryDataHandler.getInstance();
         if (config.getDay() < 40) return;
 
-        // 1) We clamp the value of slot to [0..3]
-        int clamped = slot == 8 ? 8 : slot;
-        // 2) We assign directly to the shadow field, without calling the method again
-        this.selectedSlot = clamped;
-        // 3) Cancel the original method to prevent further processing
-        ci.cancel();
+        if (slot == 8) {
+            ci.cancel();
+            return;
+        }
     }
 }
